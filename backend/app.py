@@ -1,17 +1,9 @@
 from fastapi import FastAPI
-import psycopg2
 
-try:
-    conn = psycopg2.connect (
-        host='localhost',
-        database='worldcup',
-        user='postgres',
-        password='IamThe_Best1'
-    )
-    print("Connection Successfull !!!!")
-    conn.close()
-except Exception as e :
-    print(f'Error{e}')
+from models import Database
+
+
+
 
 
 app = FastAPI()
@@ -22,109 +14,12 @@ def home():
 
 @app.get("/api/standings")
 def get_standing():
-    teams = [
-        {
-
-            "id":1,
-            "name": "India",
-            "group": "A",
-            "matches": 3,
-            "wins": 2,
-            "draws": 1,
-            "losses": 0,
-            "goalsFor": 8,
-            "goalsAgainst": 2,
-            "points": 7
-        },
-         {
-            "id": 2,
-            "name": "Argentina",
-            "group": "A",
-            "matches": 5,
-            "wins": 4,
-            "draws": 1,
-            "losses": 0,
-            "goalsFor": 12,
-            "goalsAgainst": 3,
-            "points": 13
-        },
-        {
-            "id": 3,
-            "name": "Senegal",
-            "group": "A",
-            "matches": 3,
-            "wins": 1,
-            "draws": 1,
-            "losses": 1,
-            "goalsFor": 4,
-            "goalsAgainst": 4,
-            "points": 4
-        },
-        {
-            "id": 4,
-            "name": "Qatar",
-            "group": "A",
-            "matches": 3,
-            "wins": 0,
-            "draws": 0,
-            "losses": 3,
-            "goalsFor": 1,
-            "goalsAgainst": 8,
-            "points": 0
-        },
-        {
-            "id": 5,
-            "name": "England",
-            "group": "B",
-            "matches": 3,
-            "wins": 2,
-            "draws": 1,
-            "losses": 0,
-            "goalsFor": 9,
-            "goalsAgainst": 2,
-            "points": 7
-        },
-
-        {
-            "id": 6,
-            "name": "USA",
-            "group": "B",
-            "matches": 3,
-            "wins": 1,
-            "draws": 2,
-            "losses": 0,
-            "goalsFor": 4,
-            "goalsAgainst": 2,
-            "points": 5
-        },
-
-         {
-            "id": 7,
-            "name": "Iran",
-            "group": "B",
-            "matches": 3,
-            "wins": 1,
-            "draws": 0,
-            "losses": 2,
-            "goalsFor": 3,
-            "goalsAgainst": 6,
-            "points": 3
-        },
-        {
-            "id": 8,
-            "name": "Wales",
-            "group": "B",
-            "matches": 3,
-            "wins": 0,
-            "draws": 1,
-            "losses": 2,
-            "goalsFor": 1,
-            "goalsAgainst": 7,
-            "points": 1
-        }
-
-    ]
-    return{"standings": teams}
+    db = Database()
+    cursor=db.cursor
+    cursor.execute("SELECT * FROM teams")
+    result=cursor.fetchall()
+    db.close
+    return{"standings": result}
 
 @app.get("/api/top-scorers")
 def get_top_scorers():
